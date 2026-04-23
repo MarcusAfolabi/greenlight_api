@@ -1,0 +1,10 @@
+services: 
+  greentlight-backend:
+    build: ./backend
+    env_file:
+      - .env.docker
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+      

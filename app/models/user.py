@@ -1,0 +1,49 @@
+from typing import List, Optional, TYPE_CHECKING
+from datetime import datetime
+import enum
+from sqlalchemy import String, Enum, func, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.models.wallet import Wallet
+from .base import Base
+
+if TYPE_CHECKING:
+    from .organization import Organization
+    from .session import Participant, QuizSession
+
+class UserRole(enum.Enum):
+    USER = "user"
+    HOST = "host"
+    SUPERADMIN = "superadmin"
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    hashed_password: Mapped[str] = mapped_column(String(255))
+    
+    role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.USER)
+    is_active: Mapped[bool] = mapped_column(default=True)
+    created_at: Mapped[datetime] = mapped_column(insert_default=func.now())
+    
+    # Relationships
+    owned_organization: Mapped[Optional["Organization"]] = relationship(back_populates="owner", uselist=False)
+    participations: Mapped[List["Participant"]] = relationship(back_populates="user")
+    hosted_sessions: Mapped[List["QuizSession"]] = relationship(back_populates="host")
+    payout_profile: Mapped[Optional["PayoutProfile"]] = relationship(back_populates="user", uselist=False)
+    wallet: Mapped[Optional["Wallet"]] = relationship(back_populates="user", uselist=False)
+
+class PayoutProfile(Base):
+    __tablename__ = "payout_profiles"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), unique=True)
+    
+    bank_name: Mapped[str] = mapped_column(String(100))
+    account_holder_name: Mapped[str] = mapped_column(String(100))
+    account_number: Mapped[str] = mapped_column(String(50))
+    sort_code: Mapped[Optional[str]] = mapped_column(String(20))
+    iban: Mapped[Optional[str]] = mapped_column(String(50))
+    
+    user: Mapped["User"] = relationship(back_populates="payout_profile")

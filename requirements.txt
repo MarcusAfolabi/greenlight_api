@@ -1,0 +1,8 @@
+fastapi[all]
+sqlalchemy
+alembic
+psycopg2  # Changed from binary for production stability
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+pydantic-settings  # Required for your Settings(BaseSettings) class
