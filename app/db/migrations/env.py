@@ -1,15 +1,3 @@
-# backend/app/db/migrations/env.py
-import sys
-import os
-
-# 1. First, tell Python where the root 'backend' folder is
-sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
-
-# 2. NOW you can import your models
-from app.models import Base 
-
-# 3. Set the metadata for Alembic
-target_metadata = Base.metadata
 from logging.config import fileConfig
 
 from alembic import context

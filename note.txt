@@ -1,2 +1,0 @@
-python -m alembic revision --autogenerate -m "describe_change"
-python -m alembic upgrade head
