@@ -67,3 +67,5 @@ class UserService:
         db.delete(db_user)
         db.commit()
         return db_user
+    
+user_service = UserService()

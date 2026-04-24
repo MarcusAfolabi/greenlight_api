@@ -5,9 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.security import create_access_token, verify_password
 from app.db.session import get_db
 from app.models.user import UserRole
-from app.schemas.user import Token, UserCreate, UserResponse
-from app.services.organization import OrganizationService
-from app.services.user_service import UserService
+from app.schemas.user import Token, UserCreate, UserResponse 
 
 router = APIRouter()
 
@@ -16,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 @router.post("/register", response_model=UserResponse)
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
+    from app.services.user_service import UserService            # Move inside
+    from app.services.organization import OrganizationService     # Move inside
     """Register a new user."""
     if UserService.get_user_by_email(db, user_data.email):
         raise HTTPException(
@@ -47,6 +47,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=Token)
 async def login(username: str, password: str, db: Session = Depends(get_db)):
+    from app.services.user_service import UserService            # Move inside 
     """Login user and return an access token."""
     user = UserService.get_user_by_login(db, username)
     if not user or not verify_password(password, user.hashed_password):

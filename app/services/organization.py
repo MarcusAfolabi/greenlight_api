@@ -4,8 +4,7 @@ from app.models.organization import Organization
 from app.models.user import User, UserRole
 from app.schemas.organization import OrganizationCreate
 from app.schemas.user import UserCreate
-from app.core.security import hash_password
-
+from app.core.security import hash_password 
 
 class OrganizationService:
     """Service layer for organization and host onboarding."""
@@ -47,3 +46,5 @@ class OrganizationService:
         db.commit()
         db.refresh(user)
         return user
+ 
+organization_service = OrganizationService()
