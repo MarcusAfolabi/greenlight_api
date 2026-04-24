@@ -1,5 +1,5 @@
 import os
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List, Optional
 from pydantic import field_validator
 
@@ -13,9 +13,8 @@ class Settings(BaseSettings):
     
     CORS_ORIGINS: List[str] = ["*"]
      
-    # Use Optional and no default string to force Pydantic 
-    # to look at the environment variables
-    DATABASE_URL: Optional[str] = None
+    # By using os.getenv as the default, we ensure it checks the system first
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
@@ -24,8 +23,10 @@ class Settings(BaseSettings):
             return v.replace("postgres://", "postgresql://", 1)
         return v
 
-    class Config:  
-        env_file = ".env"
-        extra = "ignore" # Ignores extra variables in the env
+    # THIS IS THE KEY FIX FOR RAILWAY
+    model_config = SettingsConfigDict(
+        env_file=None,  
+        extra="ignore"
+    )
 
 settings = Settings()

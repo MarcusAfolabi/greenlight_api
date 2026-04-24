@@ -19,6 +19,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY ./app ./app
 # Copy the migrations and config files
 COPY ./alembic.ini .
-COPY .env.docker . 
+# COPY .env.docker . 
 
 CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
