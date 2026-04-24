@@ -1,8 +1,9 @@
 fastapi[all]
 sqlalchemy
 alembic
-psycopg2  # Changed from binary for production stability
+psycopg2-binary
 python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
-pydantic-settings  # Required for your Settings(BaseSettings) class
+pydantic-settings
+pyjwt

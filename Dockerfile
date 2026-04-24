@@ -5,11 +5,9 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Only install libpq-dev if you use the standard psycopg2. 
-# If you stick with psycopg2-binary, you can actually remove build-essential.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
-    gcc \ 
+    gcc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

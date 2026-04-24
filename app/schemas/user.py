@@ -1,33 +1,58 @@
-from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
+
+from app.models.user import UserRole
+from app.schemas.organization import OrganizationCreate, OrganizationResponse
+
 
 class UserBase(BaseModel):
     username: str
     email: EmailStr
 
+
 class UserCreate(UserBase):
     password: str
+    role: UserRole = UserRole.USER
+    organization: Optional[OrganizationCreate] = None
+
+    @model_validator(mode="after")
+    def validate_host_organization(self) -> "UserCreate":
+        if self.role == UserRole.HOST and self.organization is None:
+            raise ValueError("Organization data is required when role is host")
+        return self
+
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[EmailStr] = None
+    is_active: Optional[bool] = None
 
-class UserInDB(UserBase):
+
+class UserResponse(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
+    role: UserRole
     is_active: bool
     created_at: datetime
-    updated_at: datetime
-    
-    class Config:
-        from_attributes = True
+    owned_organization: Optional[OrganizationResponse] = None
 
-class UserResponse(UserInDB):
-    pass
 
 class Token(BaseModel):
+    model_config = ConfigDict(from_attributes=True) # Pydantic V2
+
     access_token: str
-    token_type: str = "bearer"
+    token_type: str
+    role: UserRole
+    username: str
+    email: str
+    id: int
+    is_active: bool
+    created_at: datetime 
+    
+
 
 class TokenPayload(BaseModel):
     sub: Optional[str] = None

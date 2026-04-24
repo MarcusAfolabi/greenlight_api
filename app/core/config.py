@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Greenlight Quiz API"
+    PROJECT_NAME: str = "Green Light Quiz API"
     API_V1_STR: str = "/api/v1"
     
     # JWT
