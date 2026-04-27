@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 @router.post("/register", response_model=UserResponse)
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
-    from app.services.user_service import UserService            # Move inside
-    from app.services.organization import OrganizationService     # Move inside
+    from app.services.user_service import UserService          
+    from app.services.organization import OrganizationService 
     """Register a new user."""
     if UserService.get_user_by_email(db, user_data.email):
         raise HTTPException(
